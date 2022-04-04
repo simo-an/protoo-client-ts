@@ -1,5 +1,5 @@
 const Logger = require('./Logger');
-const EnhancedEventEmitter = require('./EnhancedEventEmitter');
+const EnhancedEventEmitter = require('./transports/EnhancedEventEmitter');
 const Message = require('./Message');
 
 const logger = new Logger('Peer');

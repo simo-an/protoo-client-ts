@@ -1,12 +1,11 @@
 const W3CWebSocket = require('websocket').w3cwebsocket;
 const retry = require('retry');
 const Logger = require('../Logger');
-const EnhancedEventEmitter = require('../EnhancedEventEmitter');
+const EnhancedEventEmitter = require('./EnhancedEventEmitter');
 const Message = require('../Message');
 
 const WS_SUBPROTOCOL = 'protoo';
-const DEFAULT_RETRY_OPTIONS =
-{
+const DEFAULT_RETRY_OPTIONS = {
 	retries    : 10,
 	factor     : 2,
 	minTimeout : 1 * 1000,

@@ -6,8 +6,14 @@ class EnhancedEventEmitter {
 	private maxListener: number = Infinity
 	private eventListeners: Map<string, Function[]> = new Map()
 
-	constructor(customLogger?: Logger) { 
+	constructor(customLogger?: Logger) {
 		if (customLogger) logger = customLogger
+	}
+
+	public listenerCount(event: string): number {
+		const current = this.eventListeners.get(event) || []
+
+		return current.length
 	}
 
 	public setMaxListener(max: number): void {
@@ -35,14 +41,14 @@ class EnhancedEventEmitter {
 		if (current.length > this.maxListener) {
 			throw new Error(`the event of ${event} is exceed max listener`)
 		}
-		
+
 		current.push(listener)
 	}
 
 	public off(event: string, listener: Function): void {
 		const current = this.eventListeners.get(event)
 
-		if(!current || current.length === 0) return
+		if (!current || current.length === 0) return
 
 		const index = current.findIndex(fn => fn === listener)
 		current.splice(index, 1)

@@ -1,6 +1,6 @@
 import RetryOperation, { RetryOperationOptions } from "./operation"
 
-interface RetryOptions extends RetryOperationOptions {
+export interface RetryOptions extends RetryOperationOptions {
   retries?: number  // normal = 10 重试次数
   factor?: number // normal = 2
   minTimeout?: number // normal = 1000ms
@@ -20,7 +20,6 @@ const toDefalutRetryOptions = (options: RetryOptions): RetryOptions => {
   return finalOptions
 }
 
-const isFunction = (target: object): boolean => typeof target === 'function'
 
 class Retry {
   public static retry: Retry = new Retry()
@@ -57,14 +56,14 @@ class Retry {
       throw new Error('Error: minTimeout > maxTimeout')
     }
     const timeouts = []
-    for (let i=0; i<finalOptions.retries; i++) {
+    for (let i = 0; i < finalOptions.retries; i++) {
       timeouts.push(this.createTimeout(i, finalOptions))
     }
     // 按照时间从小到大排序，一般 timeouts 是已经排列好的， 随机时候可能出现乱序
     if (finalOptions.randomize) {
       timeouts.sort((t1, t2) => t1 - t2)
     }
-    
+
 
     return timeouts
   }
@@ -80,7 +79,7 @@ class Retry {
     if (operationOptions.forever == null) {
       operationOptions.forever = options.retries === Infinity
     }
-    
+
     return new RetryOperation(timeouts, operationOptions)
   }
 }

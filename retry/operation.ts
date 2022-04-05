@@ -1,3 +1,5 @@
+import { cloneArray } from "../utils"
+
 export interface RetryOperationOptions {
   forever?: boolean   // default false
   unref?: boolean     // default false
@@ -6,18 +8,16 @@ export interface RetryOperationOptions {
 
 const toDefaultOptions = (options?: RetryOperationOptions | boolean): RetryOperationOptions => {
   if (options == null) return {}
-  if (typeof options === 'boolean') return { forever: options } 
+  if (typeof options === 'boolean') return { forever: options }
 
   const finalOptions: RetryOperationOptions = {
-      forever: options?.forever ?? false, // a ?? b <=> a == null ? b : a
-      unref: options?.unref ?? false,
-      maxRetryTime: options?.maxRetryTime ?? Infinity,
-    }
+    forever: options?.forever ?? false, // a ?? b <=> a == null ? b : a
+    unref: options?.unref ?? false,
+    maxRetryTime: options?.maxRetryTime ?? Infinity,
+  }
 
   return finalOptions
 }
-
-const cloneArray = (array: Array<any>) => array.slice(0) || []
 
 type CallbackFn = (time?: number) => void
 
@@ -53,7 +53,7 @@ class RetryOperation {
   /**
    * 重置
    */
-  public reset(): void { 
+  public reset(): void {
     this.attemptTime = 1
     this.timeouts = cloneArray(this.cachedTimeouts)
   }
@@ -61,7 +61,7 @@ class RetryOperation {
   /**
    * 停止
    */
-  public stop(): void { 
+  public stop(): void {
     if (this.timeout) clearTimeout(this.timeout)
     if (this.timer) clearTimeout(this.timer)
 
@@ -72,12 +72,12 @@ class RetryOperation {
   /**
    * 重试
    */
-  public retry(error: Error): boolean { 
+  public retry(error: Error): boolean {
     if (this.timeout) clearTimeout(this.timeout)
     if (!error) return false
 
     this.errorList.push(error)
-    
+
 
     if (Date.now() - this.operationStart >= this.maxRetryTime) { // 超时
       this.errorList.unshift(new Error('RetryOperation timeout occurred'));
@@ -96,7 +96,7 @@ class RetryOperation {
     }
 
     this.timer = setTimeout(() => {
-      this.attemptTime ++ // 尝试次数 +1
+      this.attemptTime++ // 尝试次数 +1
       if (this.timeoutCallback) {
         this.timeout = setTimeout(() => this.timeoutCallback(this.attemptTime), this.callbackTimeout)
 
@@ -136,8 +136,8 @@ class RetryOperation {
     this.callback(this.attemptTime)
   }
 
-  public try(callback: CallbackFn): void {  this.attempt(callback) }
-  public start(callback: CallbackFn): void {  this.attempt(callback) }
+  public try(callback: CallbackFn): void { this.attempt(callback) }
+  public start(callback: CallbackFn): void { this.attempt(callback) }
 
   public errors(): Error[] { return this.errorList }
   public attempts(): number { return this.attemptTime }
@@ -146,7 +146,7 @@ class RetryOperation {
    * 获取发生次数最多的Error
    * @returns 发生次数最多的Error
    */
-  public mainError(): Error { 
+  public mainError(): Error {
     const errorCount = {}
 
     let mainError = null
